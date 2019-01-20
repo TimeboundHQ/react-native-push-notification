@@ -120,7 +120,7 @@ public class RNPushNotificationHelper {
         // If the fireDate is in past, this will fire immediately and show the
         // notification to the user
         PendingIntent pendingIntent = toScheduleNotificationIntent(bundle);
-        if (System.currentTimeMillis() < fireDate) {
+        // if (System.currentTimeMillis() < fireDate) {
             Log.d(LOG_TAG, String.format("Setting a notification with id %s at time %s",
                     bundle.getString("id"), Long.toString(fireDate)));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -128,7 +128,7 @@ public class RNPushNotificationHelper {
             } else {
                 getAlarmManager().set(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
             }
-        }
+        // }
     }
 
     public void sendToNotificationCentre(Bundle bundle) {
