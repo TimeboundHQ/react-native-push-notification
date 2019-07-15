@@ -118,17 +118,20 @@ public class RNPushNotificationHelper {
         long fireDate = (long) bundle.getDouble("fireDate");
 
         // If the fireDate is in past, this will fire immediately and show the
-        // notification to the user
+        // NOTE: Firedate issue has been resolved natively on React Native
+        
         PendingIntent pendingIntent = toScheduleNotificationIntent(bundle);
-        // if (System.currentTimeMillis() < fireDate) {
-            Log.d(LOG_TAG, String.format("Setting a notification with id %s at time %s",
-                    bundle.getString("id"), Long.toString(fireDate)));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
-            } else {
-                getAlarmManager().set(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
-            }
-        // }
+
+        Log.d(LOG_TAG, String.format("Setting a notification with id %s at time %s",
+                bundle.getString("id"), Long.toString(fireDate)));
+                
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getAlarmManager().setAlarmClock(new AlarmManager.AlarmClockInfo(fireDate, pendingIntent), pendingIntent);
+        } else {
+            getAlarmManager().set(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
+        }
     }
 
     public void sendToNotificationCentre(Bundle bundle) {
